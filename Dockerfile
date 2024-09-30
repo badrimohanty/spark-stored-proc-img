@@ -1,5 +1,5 @@
 # Use the official Python 3.9 slim image as a base
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -13,8 +13,7 @@ RUN apt-get update && \
 # Install required Python packages
 RUN pip install --no-cache-dir \
     pyspark \
-    google-cloud-bigquery \
-    slack-sdk
+    google-cloud-bigquery
 
 # Copy the rest of the application code into the container
 COPY . .
