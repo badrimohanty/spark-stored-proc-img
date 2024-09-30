@@ -5,15 +5,23 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Update package list and install dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-11-jre-headless wget && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Update the OS packages
+RUN apt update \
+    && apt upgrade \
+    && apt install curl -y \
+# This removes packages that can no longer be downloaded
+    && apt autoclean -y \ 
+# This removes dependencies of packages that are no longer installed
+    && apt autoremove -y
 
-# Install required Python packages
-RUN pip install --no-cache-dir \
-    pyspark \
-    google-cloud-bigquery
+RUN pip install --upgrade pip
+RUN apt-get install default-jdk -y
+RUN pip install pyspark google-cloud-bigquery
+RUN pip -V \
+    && python -V
+# Verify that the image does not have conflicting dependencies.
+RUN pip check
+
 
 # Copy the rest of the application code into the container
 COPY . .
